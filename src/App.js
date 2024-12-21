@@ -15,12 +15,11 @@ library.add(faTrademark, faCode);
 
 function App() {
   const [user, setUser] = useState();
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       setLoading(false);
-      console.log('checking login status');
       if (user) {
         setUser(user);
       }
@@ -31,7 +30,7 @@ function App() {
     console.log("register");
     createUserWithEmailAndPassword(auth, "email@email.com", "test123")
       .then((user) => {
-        console.log('registered');
+        console.log("registered");
       })
       .catch((error) => {
         console.log(error);
@@ -39,6 +38,7 @@ function App() {
   }
 
   function login() {
+    setLoading(true);
     signInWithEmailAndPassword(auth, "email@email.com", "test123")
       .then(({ user }) => {
         setUser(user);
@@ -49,7 +49,8 @@ function App() {
   }
 
   function logout() {
-    setUser({});
+    setLoading(true);
+    setUser();
     signOut(auth);
   }
 
@@ -63,9 +64,12 @@ function App() {
             <b>Frontend</b> Simplified
           </p>
         </div>
-        <div className="buttons__container">
+        <div className="btns__container">
           {loading ? (
-            "loading..."
+            <>
+              <div className="skeleton__state rectangle"></div>
+              <div className="skeleton__state circle"></div>
+            </>
           ) : user ? (
             <>
               <div className="logout__btn--wrapper">
